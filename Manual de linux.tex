@@ -1,0 +1,191 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}   
+\usepackage[T1]{fontenc}      
+\usepackage[spanish, es-tabla]{babel} 
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+    inputencoding=utf8,
+    extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1,
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    keywordstyle=\color{blue},
+    commentstyle=\color{codegray},
+    stringstyle=\color{orange},
+    keepspaces=true,
+    showstringspaces=false,
+    tabsize=2
+}
+
+\title{\textbf{Manual para Linux}}
+\author{Gabriel Sandi}
+\date{Febrero 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Objetivo}
+Este manual técnico tiene como propósito servir de guía integral para el aprendizaje y consulta rápida sobre la gestión del sistema operativo Linux, cubriendo desde la navegación básica hasta la automatización mediante Shell Scripting.
+
+\section{Sección I: Comandos Básicos (Navegación y Archivos)}
+
+\subsection{Gestión de Directorios}
+\textbf{Comandos: ls, cd, mkdir, pwd}
+\begin{lstlisting}[language=bash]
+# ls: Listar contenido
+ls -lh       # Muestra archivos con tamano en formato legible (KB, MB).
+ls -R        # Muestra el contenido de forma recursiva (subdirectorios).
+ls -S        # Ordena los archivos por tamano.
+
+# cd: Cambiar directorio
+cd ~         # Va directamente a la carpeta personal del usuario (HOME).
+cd /etc      # Cambia a la ruta absoluta de configuraciones del sistema.
+
+# mkdir: Crear carpetas
+mkdir -p proy/src/bin # Crea toda la estructura de carpetas de una vez.
+\end{lstlisting}
+
+\subsection{Manipulación de Archivos}
+\textbf{Comandos: cp, mv, rm, touch, cat}
+\begin{lstlisting}[language=bash]
+# cp: Copiar
+cp -v file1.txt backup/  # Copia y muestra que archivo se esta procesando.
+cp *.jpg imagenes/       # Copia todos los archivos JPG a una carpeta.
+
+# rm: Eliminar
+rm -i archivo.txt  # Pide confirmacion antes de borrar (modo seguro).
+\end{lstlisting}
+
+\subsection{Nuevos Comandos Añadidos (Básicos)}
+\begin{itemize}
+    \item \textbf{alias}: Crea atajos para comandos largos.
+    \begin{lstlisting}[language=bash]
+    alias ll='ls -la'     # Crea el comando 'll' para ver todo detallado.
+    alias ..='cd ..'      # Atajo rapido para subir de nivel.
+    \end{lstlisting}
+    
+    \item \textbf{history}: Muestra la lista de comandos ejecutados anteriormente.
+    \begin{lstlisting}[language=bash]
+    history | tail -n 10  # Muestra los ultimos 10 comandos usados.
+    !42                   # Ejecuta el comando numero 42 del historial.
+    \end{lstlisting}
+
+    \item \textbf{clear}: Limpia la terminal.
+    \begin{lstlisting}[language=bash]
+    clear                 # Limpia la pantalla visualmente.
+    \end{lstlisting}
+\end{itemize}
+
+\section{Sección II: Comandos Avanzados (Sistema y Filtros)}
+
+\subsection{Filtros de Texto}
+\textbf{Comandos: grep, find, head, tail, sort, wc}
+\begin{lstlisting}[language=bash]
+# grep: Buscar texto
+grep -i "error" log.txt   # Busca la palabra ignorando mayusculas/minusculas.
+grep -v "info" log.txt    # Muestra todas las lineas que NO contienen "info".
+
+# find: Buscar archivos
+find . -type d            # Busca solo directorios en la ruta actual.
+find /tmp -mtime +7       # Busca archivos modificados hace mas de 7 dias.
+\end{lstlisting}
+
+\subsection{Nuevos Comandos Añadidos (Avanzados)}
+\begin{itemize}
+    \item \textbf{du}: Estima el uso de espacio de archivos y directorios.
+    \begin{lstlisting}[language=bash]
+    du -sh * # Resumen del tamano de cada carpeta en el nivel actual.
+    du -sk /var/log       # Tamano de los logs en kilobytes.
+    \end{lstlisting}
+
+    \item \textbf{df}: Informa sobre el espacio libre en el disco.
+    \begin{lstlisting}[language=bash]
+    df -h                 # Muestra particiones y espacio libre en formato GB/MB.
+    \end{lstlisting}
+
+    \item \textbf{free}: Muestra el estado de la memoria RAM y Swap.
+    \begin{lstlisting}[language=bash]
+    free -m               # Muestra el uso de memoria en Megabytes.
+    \end{lstlisting}
+\end{itemize}
+
+\section{Sección III: Programación Shell (Bash Scripting)}
+
+\subsection{Estructuras de Control}
+\begin{lstlisting}[language=bash]
+#!/bin/bash
+# Ejemplo de bucle FOR para renombrar archivos
+for f in *.txt; do
+    mv "$f" "respaldo_$f"
+    echo "Renombrado $f"
+done
+\end{lstlisting}
+
+\subsection{Nuevos Comandos para Scripting}
+\begin{itemize}
+    \item \textbf{read}: Captura la entrada del usuario.
+    \begin{lstlisting}[language=bash]
+    read -p "Ingresa tu nombre: " nombre
+    echo "Hola $nombre"
+    \end{lstlisting}
+
+    \item \textbf{sleep}: Pausa la ejecución por un tiempo determinado.
+    \begin{lstlisting}[language=bash]
+    sleep 5               # Espera 5 segundos antes de continuar el script.
+    \end{lstlisting}
+
+    \item \textbf{exit}: Finaliza el script con un código de estado.
+    \begin{lstlisting}[language=bash]
+    exit 0                # Finalizacion exitosa.
+    exit 1                # Finalizacion con error.
+    \end{lstlisting}
+\end{itemize}
+
+\section{Sección IV: Guía de Diagnóstico (5 Errores Comunes)}
+\begin{enumerate}
+    \item \textbf{Permission denied}: Falta de privilegios. Solución: \texttt{sudo [comando]} o \texttt{chmod +x [archivo]}.
+    \item \textbf{Command not found}: Error tipográfico o binario fuera del PATH. Solución: Revisar \texttt{echo \$PATH}.
+    \item \textbf{No such file or directory}: Ruta inexistente. Solución: Verificar con \texttt{ls} o usar rutas absolutas.
+    \item \textbf{File exists}: Error al crear algo que ya está allí. Solución: Usar flags de fuerza como \texttt{mkdir -p} o \texttt{mv -f}.
+    \item \textbf{Read-only file system}: El disco tiene errores y se protegió. Solución: Ejecutar \texttt{fsck} para reparar.
+\end{enumerate}
+
+\section{Sección V: Tuberías y Redireccionamientos}
+Esta sección explica cómo Linux gestiona la entrada y salida de datos a través de los flujos estándar: \textbf{stdin} (0), \textbf{stdout} (1) y \textbf{stderr} (2).
+
+\subsection{Uso de Redirecciones (\textgreater\ y \textgreater\textgreater)}
+\begin{itemize}
+    \item \textbf{Salida simple} (\textgreater): Sobrescribe un archivo con el resultado.
+    \item \textbf{Añadir} (\textgreater\textgreater): Agrega el resultado al final del archivo sin borrar lo anterior.
+\end{itemize}
+
+\begin{lstlisting}[language=bash]
+# Enviar solo los errores a un log aparte
+ls /root 2> errores.log
+
+# Guardar salida normal y errores en el mismo lugar
+comando > total.txt 2>&1
+\end{lstlisting}
+
+\subsection{Uso de Tuberías (Pipes)}
+Permiten conectar la salida de un comando con la entrada de otro.
+\begin{lstlisting}[language=bash]
+# Ejemplo: Listar procesos y buscar uno especifico
+ps aux | grep "apache"
+
+# Ejemplo: Buscar archivos grandes y ordenarlos
+du -h | sort -h | tail -n 5
+\end{lstlisting}
+\end{document}
